@@ -1,0 +1,60 @@
+%Tile Size 18-19,MX---,
+%,MX---,
+(MSG "START")
+N100 G00 X475 Y520 Z100             ; Home position
+G00 X632.312 Y816.098 Z63.0         ; Move to esr pickup
+G01 Z22.240 F2000                   ; Move down slowly to pickup esr
+M1100                               ; Activating end effector suction
+G4K020                              ; Pause 200 ms to allow vacuum pickup
+G00 Z80                             ; Move up after picking up esr
+G00 X466.026 Y516.588 Z25.0         ; Move to folding station
+G01 Z-3.911 F2000                   ; Move down esr to folding station
+M1101 M1000                         ; Activating hold down suction and Release end effector
+G4K010                              ; Pause 100 ms
+G00 Z35.0                           ; Move up after placing esr down
+M2100                               ; Activate tile feeder
+G4K020                              ; Pause 200 ms
+G00 X611.930 Y358.193               ; Move to the tile pick up position 
+G01 Z24.150 F2000                   ; Move down Z to pickup tile 
+M1100                               ; Activating end effector suction
+G4K020                              ; Pause 200 ms
+M2000                               ; Retract tile feeder
+G00 Z100.0                          ; Lift up tile
+G00 X477.014 Y521.774 Z8.00         ; Move back to center to place tile
+G01 Z-0.675 F2000                   ; Move down slowly to place tile
+M1000                               ; Turn off end effector
+G01 Z-4.045 F1000 M2101             ; Retract folding pocket and push with end effector
+G4K010                              ; Pause 100 ms
+G00 Z140.0                          ; Move up in Z
+M2105                               ; Turn on actuators arm 4
+G4K200                              ; Pause 2000 ms
+M2103                               ; Turn on actuators arm 2
+G4K100                              ; Pause 1000 ms
+M2102 M2104                         ; Turn on actuators 1 and 3
+G4K100                              ; Pause 1000 ms
+G00 Y625.619                        ; Move to sticker
+G00 X623.000                        ; Move to sticker
+G01 Z121.041 F1000                  ; Move to sticker
+G4K050                              ; Pause 500 ms
+M1100                               ; Activating end effector suction
+G4K050                              ; Pause 500 ms
+G01 Z125.0 F2000                    ; Move up to lift sticker
+G00 X478.238                        ; Return to center
+G00 Y521.280 Z10.0                  ; Return to center
+G01 Z-4.845 F1000                   ; Apply sticker
+M1000                               ; Release sticker
+G4K200                              ; Pause 2000 ms
+M2002 M2003 M2004 M2005             ; Retract actuators
+G00 Z10                             ; Move up to push out tile
+M2001                               ; Push out pocket
+G01 Z0.8 F1000                      ; Move down to pick up completed tile
+M1001                               ; Release pocket suction
+M1100                               ; Activating end effector
+G4K020                              ; Pause 200 ms for pickup
+G00 Z50                             ; Lift tile
+G00 X560.5 Y640.5                   ; Move to drop of completed tile
+M1000                               ; Release end effector
+G00 X475 Y520 Z100                  ; Return to home position
+(MSG "END")
+;(GOTO N100)
+M30

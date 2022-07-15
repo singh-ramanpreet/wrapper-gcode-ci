@@ -1,0 +1,184 @@
+%,MX---,
+;
+DEF /EMERSTPIN    I1;  Not Emergency From ESR2
+DEF I-POWERON     I2;  POWER ON
+;
+; HBA I/O
+;
+;
+;
+;                      **************************
+;                      * DEFINITIONS OF OUTPUTS *
+;                      **************************
+;
+;
+DEF /EMERSTP      O01; MAIN CONTACTOR
+DEF O-ZBRK        O02; Z AXIS BRAKE
+DEF O-MACON       O03; MACHINE ON LAMP
+;
+;                      **************************
+;                      *  DEFINITIONS OF MARKS  *
+;                      **************************
+;
+;
+;
+;                  ******************************   
+;                  * CYCLE 1 (power-up routine) *
+;                  ******************************
+;
+CY1
+() = ERA O1 256         ; OUTPUTS
+   = ERA C1 256         ; counters
+   = ERA T1 256         ; timers
+   = ERA R1 400         ; USER REGISTERS
+   = ERA M1 2000        ; ERASE USER MARKS
+   = ERA M4000 4127     ; marks associated with messages
+   = ERA M4500 4563     ; marks     "       "   errors 
+   = ERA M4700 4955     ; marks     "       "   screens
+   = PLCREADY           ; set PLCREADY TRUE
+END
+;
+PRG
+REA
+() = GEAR1
+;
+;
+;
+;
+;                **********************
+;                * Servo Enable Logic *
+;                **********************
+DRSTAFX = B0R101  ;X DRIVE FIRST STATUS FLAG
+DRSTASX = B1R101  ;X DRIVE SECOND STATUS FLAG
+DRSTAFY = B0R102  ;Y DRIVE FIRST STATUS FLAG
+DRSTASY = B1R102  ;Y DRIVE SECOND STATUS FLAG
+DRSTAFZ = B0R103  ;Z DRIVE FIRST STATUS FLAG
+DRSTASZ = B1R103  ;Z DRIVE SECOND STATUS FLAG
+    CPS R101 GE 1
+AND CPS R102 GE 1
+AND CPS R103 GE 1
+AND /ALARM 
+AND CNCREADY 
+AND PLCREADY
+=   M10
+;
+DFU I-POWERON
+AND NOT LOPEN 
+AND /EMERSTPIN 
+AND M10
+=   SET /EMERSTP
+;
+NOT M10
+OR NOT I1
+=   RES /EMERSTP
+;
+    /EMERSTP
+=   SPENAX
+=   SPENAY
+=   SPENAZ  
+;
+/EMERSTP = TG3 10 3000
+T10
+=   DRENAX
+=   DRENAY
+=   DRENAZ
+;
+    /EMERSTP
+AND SPENAX
+AND CPS R101 GE 3
+=   SERVOXON
+= NOT DROX
+;
+    /EMERSTP
+AND SPENAY
+AND CPS R102 GE 3
+=   SERVOYON
+= NOT DROY
+;
+    /EMERSTP
+AND SPENAZ
+AND CPS R103 GE 3
+=   SERVOZON
+= NOT DROZ
+=   O-ZBRK
+    SERVOXON
+AND SERVOYON
+AND SERVOZON
+=   M11
+I1 AND (M11 OR M2011) = O-MACON
+NOT O-MACON
+OR RESETOUT
+OR NOT I1
+OR DM30
+OR DM02
+= M30
+;
+;               M CODES
+;               *******
+;
+MSTROBE OR SSTROBE OR TSTROBE =TG1 1 100
+NOT T1 = AUXEND
+MSTROBE AND CPS MBCD* EQ $00 = M100
+MSTROBE AND CPS MBCD* EQ $01 = M101
+MSTROBE AND CPS MBCD* EQ $02 = M102
+MSTROBE AND CPS MBCD* EQ $03 = M103
+MSTROBE AND CPS MBCD* EQ $04 = M104
+MSTROBE AND CPS MBCD* EQ $05 = M105
+MSTROBE AND CPS MBCD* EQ $08 = M108
+MSTROBE AND CPS MBCD* EQ $09 = M109
+MSTROBE AND CPS MBCD* EQ $30 = M130
+; M-code convention: MABCD
+; A = 1 for Vacuum solenoids; A = 2 for compressed air solenoids
+; B = 0 for Off setting of relay; B = 1 for ON setting of relay
+; CD = for the address according to wiring label
+;
+; Vacuum section
+DFU MSTROBE AND CPS MBCD* EQ $1000 = M1000 ;VAC-00 OFF  End Effector controls
+DFU MSTROBE AND CPS MBCD* EQ $1100 = M1100 ;VAC-00 ON
+M1000 OR M30 = RES O4
+M1100 = SET O4
+DFU MSTROBE AND CPS MBCD* EQ $1001 = M1001 ;VAC-01 OFF Wrap hold down controls
+DFU MSTROBE AND CPS MBCD* EQ $1101 = M1101 ;VAC-01 ON
+M1001 OR M30 = RES O5
+M1101 = SET O5
+;
+; Compressed air section
+DFU MSTROBE AND CPS MBCD* EQ $2000 = M2000 ;Comp-00 OFF Tile Feeder controls
+DFU MSTROBE AND CPS MBCD* EQ $2100 = M2100 ;Comp-00 ON
+M2000 OR M30 = RES O33
+M2100 = SET O33
+DFU MSTROBE AND CPS MBCD* EQ $2001 = M2001 ;Comp-01 OFF Pushout controls
+DFU MSTROBE AND CPS MBCD* EQ $2101 = M2101 ;Comp-01 ON
+M2001 OR M30 = RES O34
+M2101 = SET O34
+DFU MSTROBE AND CPS MBCD* EQ $2002 = M2002 ;Comp-02 OFF ACtuator 1
+DFU MSTROBE AND CPS MBCD* EQ $2102 = M2102 ;Comp-02 ON
+M2002 OR M30 = RES O35
+M2102 = SET O35
+DFU MSTROBE AND CPS MBCD* EQ $2003 = M2003 ;Comp-03 OFF acutator 2
+DFU MSTROBE AND CPS MBCD* EQ $2103 = M2103 ;Comp-03 ON
+M2003 OR M30 = RES O36
+M2103 = SET O36
+DFU MSTROBE AND CPS MBCD* EQ $2004 = M2004 ;Comp-04 OFF ACTUATOR 3
+DFU MSTROBE AND CPS MBCD* EQ $2104 = M2104 ;Comp-04 ON
+M2004 OR M30 = RES O37
+M2104 = SET O37
+DFU MSTROBE AND CPS MBCD* EQ $2005 = M2005 ;Comp-05 OFF ACTUATOR 4
+DFU MSTROBE AND CPS MBCD* EQ $2105 = M2105 ;Comp-05 ON
+M2005 OR M30 = RES O38
+M2105 = SET O38
+DFU MSTROBE AND CPS MBCD* EQ $2006 = M2006 ;Comp-06 OFF Puffer controls
+DFU MSTROBE AND CPS MBCD* EQ $2106 = M2106 ;Comp-06 ON
+M2006 OR M30 = RES O39
+M2106 = SET O39
+;
+M11 = /FEEDHOL = /XFERINH = /STOP
+;
+START = CYSTART
+;
+M11 AND DFU M103 = SET M203 = RES M204
+M11 AND DFU M104 = SET M204 = RES M203
+NOT M11 OR M105 OR M130 OR M102 = RES M203 = RES M204
+;
+DFU B1R563 = CPL O4
+END
