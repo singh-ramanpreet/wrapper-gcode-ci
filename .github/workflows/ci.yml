@@ -21,7 +21,6 @@ jobs:
         run: |
           pip install pyyaml
           python generate.py
-
       - name: Deploy changes 🚀
       - run: |
           git config user.name github-actions
