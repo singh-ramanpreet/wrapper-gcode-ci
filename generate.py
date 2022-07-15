@@ -9,7 +9,7 @@ class program_config:
         if self.config is None:
             return default
 
-        if self.config[param] is not None:
+        if param in self.config:
             return self.config[param]
         else:
             return default
@@ -68,11 +68,25 @@ if __name__ == '__main__':
             file.write(f"M1100".ljust(36) + f"; Activating end effector suction\r\n")
             file.write(f"G4K050".ljust(36) + f"; Pause 500 ms\r\n")
             file.write(f"G01 Z125.0 F2000".ljust(36) + f"; Move up to lift sticker\r\n")
-            file.write(f"G00 X478.238".ljust(36) + f"; Return to center\r\n")
-            file.write(f"G00 Y521.280 Z10.0".ljust(36) + f"; Return to center\r\n")
+            file.write(f"G00 {pc.set('sticker-x-place', 'X478.238')}".ljust(36) + f"; Return to center\r\n")
+            file.write(f"G00 {pc.set('sticker-y-place', 'Y522.180')} Z10.0".ljust(36) + f"; Return to center\r\n")
             file.write(f"G01 Z-4.845 F1000".ljust(36) + f"; Apply sticker\r\n")
             file.write(f"M1000".ljust(36) + f"; Release sticker\r\n")
+            file.write(f"G4K020".ljust(36) + f"; Pause 200 ms\r\n")
+            file.write(f"G00 Z80".ljust(36) + f";\r\n")
+            file.write(f"G00 X577.806 Y392.740".ljust(36) + f";\r\n")
+            file.write(f"G00 Z27.000".ljust(36) + f";\r\n")
+            file.write(f"M1100".ljust(36) + f"; Activating end effector suction\r\n")
+            file.write(f"G00 Z80".ljust(36) + f";\r\n")
+            file.write(f"G00 X477.014 Y521.774 Z8.00".ljust(36) + f";\r\n")
+            file.write(f"G01 Z-3.500 F1000".ljust(36) + f";\r\n")
             file.write(f"G4K200".ljust(36) + f"; Pause 2000 ms\r\n")
+            file.write(f"G00 Z80".ljust(36) + f";\r\n")
+            file.write(f"G00 X577.806 Y392.740".ljust(36) + f";\r\n")
+            file.write(f"G00 Z27.000".ljust(36) + f";\r\n")
+            file.write(f"M1000".ljust(36) + f";\r\n")
+            file.write(f"G00 Z80".ljust(36) + f";\r\n")
+            file.write(f"G00 X477.014 Y521.774 Z10.00".ljust(36) + f";\r\n")
             file.write(f"M2002 M2003 M2004 M2005".ljust(36) + f"; Retract actuators\r\n")
             file.write(f"G00 Z10".ljust(36) + f"; Move up to push out tile\r\n")
             file.write(f"M2001".ljust(36) + f"; Push out pocket\r\n")
