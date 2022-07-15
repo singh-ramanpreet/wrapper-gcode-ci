@@ -39,11 +39,25 @@ G4K050                              ; Pause 500 ms
 M1100                               ; Activating end effector suction
 G4K050                              ; Pause 500 ms
 G01 Z125.0 F2000                    ; Move up to lift sticker
-G00 X478.238                        ; Return to center
-G00 Y521.280 Z10.0                  ; Return to center
+G00 X479.238                        ; Return to center
+G00 Y522.280 Z10.0                  ; Return to center
 G01 Z-4.845 F1000                   ; Apply sticker
 M1000                               ; Release sticker
+G4K020                              ; Pause 200 ms
+G00 Z80                             ;
+G00 X577.806 Y392.740               ;
+G00 Z27.000                         ;
+M1100                               ; Activating end effector suction
+G00 Z80                             ;
+G00 X477.014 Y521.774 Z8.00         ;
+G01 Z-3.500 F1000                   ;
 G4K200                              ; Pause 2000 ms
+G00 Z80                             ;
+G00 X577.806 Y392.740               ;
+G00 Z27.000                         ;
+M1000                               ;
+G00 Z80                             ;
+G00 X477.014 Y521.774 Z10.00        ;
 M2002 M2003 M2004 M2005             ; Retract actuators
 G00 Z10                             ; Move up to push out tile
 M2001                               ; Push out pocket
