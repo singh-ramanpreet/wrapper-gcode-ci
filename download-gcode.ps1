@@ -14,7 +14,7 @@ if ($result -eq [Windows.Forms.DialogResult]::OK) {
 $repo = "singh-ramanpreet/wrapper-gcode-ci"
 $version = "main"
 $filesUrl = "https://raw.githubusercontent.com/$repo/$version"
-$filesToDownload = (curl https://api.github.com/repos/singh-ramanpreet/wrapper-gcode-ci/contents `
+$filesToDownload = (curl https://api.github.com/repos/singh-ramanpreet/wrapper-gcode-ci/contents -UseBasicParsing `
                     | ConvertFrom-Json).name | Where-Object {($_ -like 'R*.PIT')}
 foreach ($file_ in $filesToDownload)
 {
