@@ -11,7 +11,7 @@ CI for generating Wrapper G-code
 
 Use PowerShell script `download-gcode.ps1` to download `R*.PIT` files to PC connected to machine.`
 
-1. Get the PS Script. Right-Click [download](https://raw.githubusercontent.com/singh-ramanpreet/wrapper-gcode-ci/main/download-gcode.ps1)
+1. Get the PS Script. Skip this step if you have it already. Right-Click [download](https://raw.githubusercontent.com/singh-ramanpreet/wrapper-gcode-ci/main/download-gcode.ps1)
  link and select `Save As`. 
 2. Run the Script. Right-Click the downloaded script, select `Run With PowerShell`. Select the destination folder and press `Ok`.
 
