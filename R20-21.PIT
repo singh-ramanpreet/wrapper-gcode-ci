@@ -20,7 +20,7 @@ M1100                               ; Activating end effector suction
 G4K020                              ; Pause 200 ms
 M2000                               ; Retract tile feeder
 G00 Z100.0                          ; Lift up tile
-G00 X475.590 Y521.438 Z8.00         ; Move back to center to place tile
+G00 X475.740 Y521.438 Z8.00         ; Move back to center to place tile
 G01 Z-0.675 F2000                   ; Move down slowly to place tile
 M1000                               ; Turn off end effector
 G01 Z-4.045 F1000 M2101             ; Retract folding pocket and push with end effector
